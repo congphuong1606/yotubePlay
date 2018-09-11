@@ -82,7 +82,7 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         Bitmap top1 = Bitmap.createBitmap(bitmap, 0, 12, h, h);
-                        holder.imageView.setImageBitmap(BlurImage.fastblur(bitmap, 0.1f, 3));
+                        holder.imageView.setImageBitmap(BlurImage.fastblur(bitmap, 0.1f, 30));
 
                         holder.imageViewAva.setImageBitmap(getRoundedCornerBitmap(top1,6));
                     }
