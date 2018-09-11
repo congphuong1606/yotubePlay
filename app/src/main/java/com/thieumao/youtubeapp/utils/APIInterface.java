@@ -21,5 +21,5 @@ public interface APIInterface {
 
 
     @GET("playlists?part=snippet,contentDetails&maxResults=10&fields=items(contentDetails,id,snippet(title,thumbnails(high(url),default))),nextPageToken,pageInfo&key="+DEVELOPERKEY)
-    Call<YtPlaylistResponse> doGetListPlaylist(@Query("channelId") String channelId);
+    Call<YtPlaylistResponse> doGetListPlaylist(@Query("channelId") String channelId,@Query("pageToken")  String nextPage);
 }

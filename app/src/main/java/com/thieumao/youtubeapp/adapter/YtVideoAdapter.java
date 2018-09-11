@@ -22,7 +22,7 @@ import com.thieumao.youtubeapp.image.ImageLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PlaylistAdapter extends BaseAdapter {
+public class YtVideoAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
     Context context;
@@ -30,7 +30,7 @@ public class PlaylistAdapter extends BaseAdapter {
     ImageLoader imageLoader;
     HashMap<String, String> resultp = new HashMap<String, String>();
 
-    public PlaylistAdapter(Context context, ArrayList<HashMap<String, String>> arraylist) {
+    public YtVideoAdapter(Context context, ArrayList<HashMap<String, String>> arraylist) {
         this.context = context;
         this.data = arraylist;
         imageLoader = new ImageLoader(context);
@@ -55,7 +55,7 @@ public class PlaylistAdapter extends BaseAdapter {
         TextView playlisttitle;
         ImageView playlistthumbnails;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.playlist_item, parent, false);
+        View itemView = inflater.inflate(R.layout.video_item, parent, false);
         resultp = data.get(position);
         playlisttitle = (TextView) itemView.findViewById(R.id.playlisttitle);
         playlistthumbnails = (ImageView) itemView.findViewById(R.id.playlistthumbnails);

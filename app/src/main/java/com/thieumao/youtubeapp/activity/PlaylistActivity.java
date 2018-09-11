@@ -1,6 +1,7 @@
 package com.thieumao.youtubeapp.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.thieumao.youtubeapp.R;
-import com.thieumao.youtubeapp.adapter.PlaylistAdapter;
+import com.thieumao.youtubeapp.adapter.YtVideoAdapter;
 import com.thieumao.youtubeapp.utils.Funs;
 import com.thieumao.youtubeapp.utils.JSONParser;
 import com.thieumao.youtubeapp.utils.Vari;
@@ -33,21 +34,25 @@ public class PlaylistActivity extends AppCompatActivity {
     public static String thumbnails = "thumbnails";
     public static String videoId = "videoId";
     ListView lvPlaylist;
-    PlaylistAdapter adapterPlaylist;
+    YtVideoAdapter adapterPlaylist;
     ProgressDialog dialogPlaylist;
     ArrayList<HashMap<String, String>> arrPlaylist;
-    String idPlaylist = "PLBcAa442MLAo9uhMRPazrSXlDNe2_mcO3";
+    String idPlaylist = "";
     String titlePlaylist = "Những Ca Khúc Mới Nhất Của Sơn Tùng M-TP 2017";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
+
+        idPlaylist =getIntent().getStringExtra("id");
+
+
         arrPlaylist = new ArrayList<HashMap<String, String>>();
         lvPlaylist = (ListView) findViewById(R.id.listviewPlaylist);
         loadmore = new ProgressBar(this);
         lvPlaylist.addFooterView(loadmore);
-        adapterPlaylist = new PlaylistAdapter(PlaylistActivity.this, arrPlaylist);
+        adapterPlaylist = new YtVideoAdapter(PlaylistActivity.this, arrPlaylist);
         lvPlaylist.setAdapter(adapterPlaylist);
         lvPlaylist.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
