@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.thieumao.youtubeapp.activity.PlaylistActivity">
+    tools:context=".ui.PlaylistActivity">
     <ListView
         android:id="@+id/listviewPlaylist"
         android:layout_width="match_parent"
