@@ -18,10 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 			new float[2], mTitleTextViewPoint = new float[2];
 	private float mTitleTextSize;
 
-
+    boolean isBrightness = false;
 
 
 
@@ -166,7 +168,11 @@ public class MainActivity extends AppCompatActivity {
 					nextPage =ytPlaylistResponse.nextPageToken;
 					loadmore = true;
 				}
-				playlistItems.addAll(ytPlaylistResponse.items);
+				ArrayList<PlaylistItem>  playlistItems1= ytPlaylistResponse.items;
+				for(PlaylistItem item :playlistItems1){
+				      item.setBrightness(isBrightness);
+				}
+				playlistItems.addAll(playlistItems1);
 				dataAdapter.notifyDataSetChanged();
 
 			}
@@ -176,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
 				call.cancel();
 			}
 		});
+
+
 	}
 
 
@@ -234,6 +242,21 @@ public class MainActivity extends AppCompatActivity {
 			getSupportActionBar().setDisplayShowTitleEnabled(false);
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
+		mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				isBrightness = !isBrightness;
+				if(isBrightness){
+					mToolBar.setNavigationIcon(R.drawable.ic_brightness_2_black_24dp);
+				}else {
+					mToolBar.setNavigationIcon(R.drawable.ic_brightness_high_black_24dp);
+				}
+				for(PlaylistItem item :playlistItems){
+					item.setBrightness(isBrightness);
+				}
+				dataAdapter.notifyDataSetChanged();
+			}
+		});
 	}
 
 	private void setUpAmazingAvatar() {

@@ -8,4 +8,6 @@
 	<color name="blue">#ff2570ba</color>
 	<!-- Mau mac dinh -->
 	<color name="grey">#f7f7f7</color>
+	<color name="fff">#ffffff</color>
+	<color name="ccc">#393939</color>
 </resources>

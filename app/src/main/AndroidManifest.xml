@@ -24,7 +24,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".ui.PlayerActivity" />
-		<activity android:name=".ui.PlaylistActivity"/>
+		<activity android:name=".ui.PlaylistPlayerActivity"/>
 	</application>
 
 </manifest>

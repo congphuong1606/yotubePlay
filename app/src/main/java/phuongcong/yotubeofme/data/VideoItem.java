@@ -2,37 +2,24 @@ package phuongcong.yotubeofme.data;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
 /**
- * Created by Ominext on 9/11/2018.
+ * Created by Ominext on 9/12/2018.
  */
 
-public class YtVideoResponse {
-    @SerializedName("nextPageToken")
-    public String nextPageToken;
-    @SerializedName("pageInfo")
-    public PageInfo pageInfo;
-    @SerializedName("items")
-    public ArrayList<SnippetParent> items =null;
+public class VideoItem {
+    @SerializedName("snippet")
+    public Snippet snippet;
+    public  boolean  isBrightness =false;
 
+    public boolean isBrightness() {
+        return isBrightness;
+    }
 
-
-    public class SnippetParent {
-        @SerializedName("snippet")
-        public Snippet snippet;
-
+    public void setBrightness(boolean brightness) {
+        isBrightness = brightness;
     }
 
 
-    public class PageInfo {
-        @SerializedName("totalResults")
-        public Integer totalResults;
-        @SerializedName("resultsPerPage")
-        public Integer resultsPerPage;
-
-
-    }
     public class Snippet {
         @SerializedName("title")
         public String titlePl;
@@ -42,7 +29,6 @@ public class YtVideoResponse {
         public ResourceId resourceId;
 
     }
-
 
     public class Thumbnails {
         @SerializedName("default")

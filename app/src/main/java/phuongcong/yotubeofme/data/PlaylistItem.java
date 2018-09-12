@@ -13,6 +13,15 @@ public class PlaylistItem {
     public Snippet snippet;
     @SerializedName("contentDetails")
     public ContentDetails contentDetails;
+    public  boolean  isBrightness =false;
+
+    public boolean isBrightness() {
+        return isBrightness;
+    }
+
+    public void setBrightness(boolean brightness) {
+        isBrightness = brightness;
+    }
 
     public class ContentDetails {
         @SerializedName("itemCount")
@@ -25,6 +34,8 @@ public class PlaylistItem {
     public class Snippet {
         @SerializedName("title")
         public String titlePl;
+        @SerializedName("description")
+        public String description;
         @SerializedName("thumbnails")
         public Thumbnails thumbnails;
 

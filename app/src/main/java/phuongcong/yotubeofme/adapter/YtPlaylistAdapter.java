@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import phuongcong.yotubeofme.R;
 import phuongcong.yotubeofme.data.PlaylistItem;
-import phuongcong.yotubeofme.ui.PlaylistActivity;
+import phuongcong.yotubeofme.ui.PlaylistPlayerActivity;
 import phuongcong.yotubeofme.utils.BlurImage;
 
 
@@ -38,6 +38,7 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
     public YtPlaylistAdapter(Context context, ArrayList<PlaylistItem> viewItemList) {
         this.context =context;
         this.viewItemList = viewItemList;
+
     }
 
     @Override
@@ -56,7 +57,7 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
     public void onBindViewHolder(final PlaylistViewHolder holder, int position) {
         if(viewItemList!=null) {
             // Get item dto in list.
-            PlaylistItem item = viewItemList.get(position);
+            final PlaylistItem item = viewItemList.get(position);
 
             if(item != null) {
 
@@ -69,7 +70,13 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
                     String count = item.contentDetails.itemCount.toString() + " video";
                     holder.textViewC.setText(count);
                 }
-
+                if(item.isBrightness()){
+                    holder.textView.setTextColor(context.getResources().getColor(R.color.ccc));
+                    holder.textViewC.setTextColor(context.getResources().getColor(R.color.ccc));
+                }else {
+                    holder.textView.setTextColor(context.getResources().getColor(R.color.fff));
+                    holder.textViewC.setTextColor(context.getResources().getColor(R.color.fff));
+                }
 
 
                 final int h = item.snippet.thumbnails.defaultt.heightIM-25;
@@ -78,7 +85,11 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         Bitmap top1 = Bitmap.createBitmap(bitmap, 0, 12, h, h);
-                        holder.imageView.setImageBitmap(BlurImage.fastblur(bitmap, 0.1f, 20));
+                        if(!item.isBrightness()){
+                            holder.imageView.setImageBitmap(BlurImage.fastblur(bitmap, 0.1f, 20));
+                        }else {
+                            holder.imageView.setImageResource(0);
+                        }
 
                         holder.imageViewAva.setImageBitmap(getRoundedCornerBitmap(top1,6));
                     }
@@ -160,7 +171,7 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       Intent intent =new Intent(context, PlaylistActivity.class);
+                       Intent intent =new Intent(context, PlaylistPlayerActivity.class);
                         intent.putExtra("id",viewItemList.get(getAdapterPosition()).id);
                         context.startActivity(intent);
                     }

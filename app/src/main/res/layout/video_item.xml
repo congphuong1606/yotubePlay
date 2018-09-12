@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/qclist_bg"
     android:padding="1dp">
     <LinearLayout
@@ -10,10 +10,12 @@
         android:layout_height="90dp" >
 
         <ImageView
-            android:id="@+id/playlistthumbnails"
+            android:id="@+id/video_thumbnail"
             android:layout_width="120dp"
-            android:layout_height="90dp"
-            android:paddingLeft="5dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:layout_margin="5dp"
+            android:layout_marginTop="10dp"
             />
     </LinearLayout>
 
@@ -24,7 +26,7 @@
         android:gravity="center_vertical" >
 
         <TextView
-            android:id="@+id/playlisttitle"
+            android:id="@+id/video_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/playlistthumbnails"
