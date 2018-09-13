@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import phuongcong.yotubeofme.R;
 import phuongcong.yotubeofme.data.PlaylistItem;
+import phuongcong.yotubeofme.event.OnClickIteml;
 import phuongcong.yotubeofme.ui.PlaylistPlayerActivity;
 import phuongcong.yotubeofme.utils.BlurImage;
 
@@ -34,9 +35,10 @@ import phuongcong.yotubeofme.utils.BlurImage;
 public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.PlaylistViewHolder> {
     Context context;
     private ArrayList<PlaylistItem> viewItemList;
-
-    public YtPlaylistAdapter(Context context, ArrayList<PlaylistItem> viewItemList) {
+    YtPlaylistAdapter.OnClickIteml onClickIteml;
+    public YtPlaylistAdapter(Context context, ArrayList<PlaylistItem> viewItemList,OnClickIteml onClickIteml) {
         this.context =context;
+        this.onClickIteml =  onClickIteml;
         this.viewItemList = viewItemList;
 
     }
@@ -151,6 +153,10 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
         return ret;
     }
 
+    public interface OnClickIteml {
+        void onClickItem(String id);
+    }
+
 
     public class PlaylistViewHolder extends RecyclerView.ViewHolder {
 
@@ -171,9 +177,8 @@ public class YtPlaylistAdapter extends RecyclerView.Adapter<YtPlaylistAdapter.Pl
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       Intent intent =new Intent(context, PlaylistPlayerActivity.class);
-                        intent.putExtra("id",viewItemList.get(getAdapterPosition()).id);
-                        context.startActivity(intent);
+                        onClickIteml.onClickItem(viewItemList.get(getAdapterPosition()).id);
+
                     }
                 });
             }

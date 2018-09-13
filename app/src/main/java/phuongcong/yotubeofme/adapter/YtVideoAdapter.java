@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 
 
 import android.content.Context;
-import android.content.Intent;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import phuongcong.yotubeofme.R;
 import phuongcong.yotubeofme.data.VideosResponse;
 import phuongcong.yotubeofme.event.OnClickIteml;
 import phuongcong.yotubeofme.image.ImageLoader;
-import phuongcong.yotubeofme.ui.PlayerActivity;
 
 
 public class YtVideoAdapter extends RecyclerView.Adapter<YtVideoAdapter.VideosViewHolder> {
@@ -139,12 +137,6 @@ public class YtVideoAdapter extends RecyclerView.Adapter<YtVideoAdapter.VideosVi
                         resultp = data.get(getAdapterPosition());
                         String idVideo = resultp.getSnippet().getResourceId().getVideoId();
                         onClickIteml.onClickItem(idVideo);
-
-                       /*
-                        Intent intent = new Intent(context, PlayerActivity.class);
-                        intent.putExtra("idVideo", idVideo);
-                        intent.putExtra("list", data);
-                        context.startActivity(intent);*/
                     }
                 });
             }

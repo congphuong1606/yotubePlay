@@ -1,25 +1,19 @@
 package phuongcong.yotubeofme.ui;
-
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.Window;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-
 import java.util.ArrayList;
-
 import phuongcong.yotubeofme.R;
 import phuongcong.yotubeofme.adapter.YtVideoAdapter;
 import phuongcong.yotubeofme.data.VideosResponse;
@@ -44,20 +38,24 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
     private boolean loadmore=true;
     private ArrayList<VideosResponse.Item> items = new ArrayList<>();
     private String nextPage="";
-    static private String VIDEO = "";//"SR6iYWJxHqs";
-    private YouTubePlayerView youTubeView;
+    static private String VIDEO = "abcabc";
+
     private TextView videoTitle,videoLikeNumber,videocomentNumber;
     private YtVideo ytVideo=new YtVideo();
-    private LinearLayout videoPlayer;
-    private YouTubePlayer mYouTubePlayer;
+    private static final int RECOVERY_REQUEST = 1;
+    private YouTubePlayerView youTubeView;
+    private int currentMiPlay=0;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_playlist);
+
         apiInterface = APIClient.getClient().create(APIInterface.class);
         idPlaylist =getIntent().getStringExtra("id");
+        VIDEO =getIntent().getStringExtra("videoId");
         findView();
         setupRecycleview();
         gitListvideo("");
@@ -66,12 +64,10 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
     }
 
     private void findView() {
-        youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-        youTubeView.initialize(Vari.DEVELOPER_KEY, this);
+        youTubeView =(YouTubePlayerView)findViewById(R.id.youtube_view1) ;
         videoTitle = (TextView) findViewById(R.id.tv_video_title);
         videoLikeNumber = (TextView) findViewById(R.id.tv_video_likeNumber);
         videocomentNumber = (TextView) findViewById(R.id.tv_video_commentNumber);
-
     }
 
 
@@ -82,12 +78,6 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
 
     private void getVideoInfo() {
         if (Funs.isNetworkAvailable(this)) {
-            /*if (mYouTubePlayer != null) {
-                mYouTubePlayer.release();
-            }*/
-            if(mYouTubePlayer!=null){
-                mYouTubePlayer.loadVideo(VIDEO);
-            }
             Call<YtVideo> call = apiInterface.doGetVideoInfo(VIDEO);
             call.enqueue(new Callback<YtVideo>() {
                 @Override
@@ -113,25 +103,76 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RECOVERY_REQUEST) {
+            getYouTubePlayerProvider().initialize(Vari.DEVELOPER_KEY, this);
+        }
+    }
+
+    protected YouTubePlayer.Provider getYouTubePlayerProvider() {
+        return youTubeView;
+    }
+
+
+
     private void setView() {
         videoTitle.setText(ytVideo.getItems().get(0).getSnippet().getTitle());
         String cmtNum =ytVideo.getItems().get(0).getStatistics().getCommentCount() + " cmt";
         String likeNum =ytVideo.getItems().get(0).getStatistics().getLikeCount() + " like";
         videocomentNumber.setText(cmtNum);
         videoLikeNumber.setText(likeNum);
-
     }
 
     @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-        mYouTubePlayer = youTubePlayer;
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer,boolean wasRestored) {
+        ArrayList<String> listId= new ArrayList<>();
+        listId.add(VIDEO);
+        for(VideosResponse.Item item:items){
+            listId.add(item.getSnippet().getResourceId().getVideoId());
+        }
+        youTubePlayer.loadVideos(listId);
+        youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+            @Override
+            public void onPlaying() {
+
+            }
+
+            @Override
+            public void onPaused() {
+
+            }
+
+            @Override
+            public void onStopped() {
+
+            }
+
+            @Override
+            public void onBuffering(boolean b) {
+                // Called when buffering starts or ends.
+            }
+
+            @Override
+            public void onSeekTo(int i) {
+            }
+        });
+
+
     }
 
+
+
     @Override
-    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+    public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                        YouTubeInitializationResult youTubeInitializationResult) {
         Toast.makeText(this, "Error :" + youTubeInitializationResult.toString(), Toast.LENGTH_LONG)
                 .show();
     }
+
+
+
+
 
 
     private void setupRecycleview() {
@@ -172,11 +213,22 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
                             items.add(item);
                         }
                     }
-                    if(nextPage.equals("")&&videosResponse.getItems().size()>0){
-                        onClickItem(items.get(0).getSnippet().getResourceId().getVideoId());
-                    }
-                    adapterPlaylist.notifyDataSetChanged();
+                    if(VIDEO.equals("abcabc")&&videosResponse.getItems().size()>0){
+                        VIDEO=items.get(0).getSnippet().getResourceId().getVideoId();
+                        getVideoInfo();
+                        youTubeView.initialize(Vari.DEVELOPER_KEY,PlaylistPlayerActivity.this);
 
+                    }
+                    int i=-1;
+                    int index=0;
+                    for(VideosResponse.Item item : items){
+                        i++;
+                        if(item.getSnippet().getResourceId().getVideoId().equals(VIDEO)){
+                            index = i;
+                        }
+                    }
+                    items.remove(index);
+                    adapterPlaylist.notifyDataSetChanged();
                     if(videosResponse.getNextPageToken()==null){
                         loadmore = false;
                     }else if(videosResponse.getNextPageToken().equals(nextPage)){
@@ -185,6 +237,8 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
                         nextPage =videosResponse.getNextPageToken();
                         loadmore = true;
                     }
+                    getVideoInfo();
+                    youTubeView.initialize(Vari.DEVELOPER_KEY,PlaylistPlayerActivity.this);
 
                 }
                 @Override
@@ -197,25 +251,14 @@ public class PlaylistPlayerActivity extends YouTubeBaseActivity implements YouTu
 
     }
 
-    VideosResponse.Item itemTam=null;
+
+
     @Override
     public void onClickItem(String id) {
-        VIDEO=id;
-        int i=-1;
-        int index=0;
-        if(itemTam!=null){
-            items.add(itemTam);
-        }
-        for(VideosResponse.Item item : items){
-            i++;
-            if(item.getSnippet().getResourceId().getVideoId().equals(VIDEO)){
-                index = i;
-                itemTam =item;
-            }
-        }
-        items.remove(index);
-        getVideoInfo();
-        adapterPlaylist.notifyDataSetChanged();
+        Intent data = new Intent();
+        data.putExtra("videoId",id);
+        setResult(Activity.RESULT_OK,data);
+        finish();
 
     }
 }

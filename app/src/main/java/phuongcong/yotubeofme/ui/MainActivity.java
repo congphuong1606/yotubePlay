@@ -1,5 +1,6 @@
 package phuongcong.yotubeofme.ui;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,18 +34,20 @@ import phuongcong.yotubeofme.callbacks.AvatarCallback;
 import phuongcong.yotubeofme.data.PlaylistItem;
 import phuongcong.yotubeofme.data.YtPlaylistResponse;
 import phuongcong.yotubeofme.event.EndlessRecyclerOnScrollListener;
+import phuongcong.yotubeofme.event.OnClickIteml;
 import phuongcong.yotubeofme.libs.AppBarStateChangeListener;
 import phuongcong.yotubeofme.libs.NetworkHelper;
 import phuongcong.yotubeofme.libs.Utils;
 import phuongcong.yotubeofme.models.AvatarModel;
 import phuongcong.yotubeofme.network.APIClient;
 import phuongcong.yotubeofme.utils.APIInterface;
+import phuongcong.yotubeofme.utils.Vari;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements YtPlaylistAdapter.OnClickIteml {
 
 	private final static float EXPAND_AVATAR_SIZE_DP = 80f;
 	private final static float COLLAPSED_AVATAR_SIZE_DP = 32f;
@@ -70,9 +73,7 @@ public class MainActivity extends AppCompatActivity {
 	private YtPlaylistAdapter dataAdapter;
 	String nextPage ="";
 	private boolean loadmore=true;
-
-
-
+	private String curentId;
 
 
 	@Override
@@ -144,8 +145,33 @@ public class MainActivity extends AppCompatActivity {
 		recyclerView
 				.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		dataAdapter = new YtPlaylistAdapter(MainActivity.this, playlistItems);
+		dataAdapter = new YtPlaylistAdapter(MainActivity.this, playlistItems,this);
 		recyclerView.setAdapter(dataAdapter);
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 12121) {
+			if (resultCode == RESULT_OK) {
+				String videoId = data.getStringExtra("videoId");
+				if(!videoId.equals("abcabc")){
+					Intent intent =new Intent(this, PlaylistPlayerActivity.class);
+					intent.putExtra("id",curentId);
+					intent.putExtra("videoId",videoId);
+					startActivityForResult(intent, 12121);
+				}
+			}
+		}
+	}
+
+
+	@Override
+	public void onClickItem(String id) {
+		curentId =id;
+		Intent intent =new Intent(this, PlaylistPlayerActivity.class);
+		intent.putExtra("id",id);
+		intent.putExtra("videoId","abcabc");
+		startActivityForResult(intent, 12121);
+
 	}
 
 
@@ -153,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 	private void getPlList(final String nextPageT) {
-     /*   String playlistId="PLBcAa442MLAo9uhMRPazrSXlDNe2_mcO3";*/
-		String channelId = "UCA3GtNtuKvcj6VrwZ5Gpx9g";
-		Call<YtPlaylistResponse> call = apiInterface.doGetListPlaylist(channelId,nextPageT);
+		Call<YtPlaylistResponse> call = apiInterface.doGetListPlaylist(Vari.CHANELID,nextPageT);
 		call.enqueue(new Callback<YtPlaylistResponse>() {
 			@Override
 			public void onResponse(Call<YtPlaylistResponse> call, Response<YtPlaylistResponse> response) {
@@ -185,51 +209,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -312,9 +291,6 @@ public class MainActivity extends AppCompatActivity {
 		mTitleTextView.setTranslationY(yTitleOffset);
 	}
 
-	/**
-	 * Avatar from TinyFaces (https://github.com/maximedegreve/TinyFaces)
-	 */
 	private void fetchAvatar() {
 		NetworkHelper.getAvatar(new AvatarCallback() {
 
